@@ -65,15 +65,33 @@ const generateID = (min, max) => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
-  const person = {
+  if (!body.name) {
+    return response.status(400).json({
+      error: "Requests must contain a name."
+    })
+  } 
+
+  if (!body.number) {
+    return response.status(400).json({
+      error: "Requests must contain a phone number."
+    })
+  }
+
+  const newPerson = {
     id: body.id || generateID(persons.length + 1, 1000000),
     name: body.name,
     number: body.number
   }
 
-  persons = persons.concat(person)
+  if (persons.find(person => person.name === newPerson.name)) {
+    return response.status(400).json({
+      error: `${newPerson.name} already exists in the phonebook.`
+    })
+  }
 
-  response.json(person)
+  persons = persons.concat(newPerson)
+
+  response.json(newPerson)
 })
 
 const PORT = 3001
