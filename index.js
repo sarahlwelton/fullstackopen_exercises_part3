@@ -66,7 +66,7 @@ app.post('/api/persons', (request, response) => {
   const body = request.body
 
   const person = {
-    id: body.id || generateID(persons.length + 1, 1000),
+    id: body.id || generateID(persons.length + 1, 1000000),
     name: body.name,
     number: body.number
   }
