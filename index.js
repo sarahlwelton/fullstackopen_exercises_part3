@@ -87,21 +87,16 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  const newPerson = {
-    id: body.id || generateID(persons.length + 1, 1000000),
+  const person = new Person({
     name: body.name,
     number: body.number
-  }
+  })
 
-  if (persons.find(person => person.name === newPerson.name)) {
-    return response.status(400).json({
-      error: `${newPerson.name} already exists in the phonebook.`
+  person
+    .save()
+    .then(savedPerson => {
+      response.json(savedPerson)
     })
-  }
-
-  persons = persons.concat(newPerson)
-
-  response.json(newPerson)
 })
 
 const PORT = process.env.PORT || 3001
