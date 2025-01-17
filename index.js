@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 app.use(express.static('dist'))
 
@@ -12,7 +13,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :P
 
 app.use(cors())
 
-let persons = [
+/* let persons = [
     { 
       "id": "1",
       "name": "Arto Hellas", 
@@ -33,10 +34,14 @@ let persons = [
       "name": "Mary Poppendieck", 
       "number": "39-23-6423122"
     }
-]
+] */
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person
+      .find({})
+      .then(persons => {
+        response.json(persons)
+      })
 })
 
 app.get('/info', (request, response) => {
@@ -46,15 +51,11 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  const person = persons.find(person => person.id === id)
-
-  if (person) {
-    response.json(person)
-  } else {
-    response.statusMessage = "No person entries found in the phonebook matching that ID"
-    response.status(404).end()
-  }
+  Person
+    .findById(request.params.id)
+    .then(person => {
+      response.json(person)
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
