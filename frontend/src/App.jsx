@@ -73,7 +73,7 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setMessageType('success')
           setMessage(`Added ${returnedPerson.name} to the phonebook`)
-            setTimeout(() => {
+          setTimeout(() => {
               setMessage('')
               setMessageType('')
             }, 5000)
@@ -89,19 +89,21 @@ const App = () => {
     if (window.confirm(`Do you want to delete the name and number for ${person.name}?`)){
       personService
       .remove(person.id)
-      setMessageType('success')
-      setMessage(`Deleted ${person.name} from the phonebook`)
-            setTimeout(() => {
+      .then(() => {
+        personService
+          .getPersons()
+          .then(initialPersons => {
+            setPersons(initialPersons)
+          })
+      })
+      setMessageType('success'),
+          setMessage(`Deleted ${person.name} from the phonebook`),
+          setTimeout(() => {
               setMessage('')
               setMessageType('')
             }, 5000)
-      .then(
-        personService.getPersons()
-        .then(initialPersons => {
-        setPersons(initialPersons)
-      }))
+      }
     }
-  }
   
   const handlePersonChange = (event) => {
     console.log(event.target.value)
