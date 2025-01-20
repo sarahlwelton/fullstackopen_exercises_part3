@@ -95,6 +95,11 @@ const App = () => {
               setMessage('')
               setMessageType('')
             }, 5000)
+      .then(
+        personService.getPersons()
+        .then(initialPersons => {
+        setPersons(initialPersons)
+      }))
     }
   }
   
