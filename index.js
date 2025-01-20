@@ -50,28 +50,34 @@ app.get('/info', (request, response) => {
     response.send(`Phonebook has info for ${entries} people <br/> ${date}`)
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   Person
     .findById(request.params.id)
     .then(person => {
-      response.json(person)
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
     })
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
   .then(result => {
     response.status(204).end()
   })
-  //.catch(error => next(error))
+  .catch(error => next(error))
 })
 
-const generateID = (min, max) => {
+// Old implementation of ID generation before Mongo
+/* const generateID = (min, max) => {
   const minCeiled = Math.ceil(min)
   const maxFloored = Math.floor(max)
 
   return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled).toString() 
-}
+} */
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
@@ -104,3 +110,21 @@ const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'Unknown endpoint.' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'Format of ID value is incorrect' })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
