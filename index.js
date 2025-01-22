@@ -45,9 +45,13 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-    const entries = persons.length
     const date = new Date(Date.now())
-    response.send(`Phonebook has info for ${entries} people <br/> ${date}`)
+    
+    Person
+      .find({})
+      .then(persons => {
+        response.send(`Phonebook has info for ${persons.length} people <br/> ${date}`)
+      })
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
