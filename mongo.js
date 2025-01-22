@@ -1,8 +1,14 @@
 const mongoose = require('mongoose')
 
 const personSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        required: true,
+        type: String,
+        minLength: 3},
     number: String
+})
+schema.path('name').validate(function(value) {
+    return value.length > 3
 })
 
 if (process.argv.length < 3) {

@@ -103,6 +103,10 @@ app.post('/api/persons', (request, response) => {
     number: body.number
   })
 
+  person.validate(function(err) {
+    console.log(err)
+  })
+
   person
     .save()
     .then(savedPerson => {
