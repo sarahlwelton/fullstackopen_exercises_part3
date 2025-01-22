@@ -80,6 +80,15 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+        .catch(error => {
+          console.log(error.response.data)
+          setMessageType('error')
+          setMessage(`${error.response.data.error}`)
+          setTimeout(() => {
+            setMessage('')
+            setMessageType('')
+          }, 5000)
+        })
     }
   }
 
