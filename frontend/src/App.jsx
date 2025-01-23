@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
@@ -52,6 +51,7 @@ const App = () => {
             setNewNumber('')
           })
           .catch(error => {
+            console.log(`${error}`)
             setMessageType('error')
             setMessage(`The entry for ${updatedPerson.name} was already removed from the phonebook.`)
             setTimeout(() => {
